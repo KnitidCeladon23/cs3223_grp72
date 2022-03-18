@@ -70,7 +70,7 @@ class TablePlanner {
    		 Plan outputPlan = makeProductJoin(current, sch);  
    		 Plan mergePlan = makeMergeJoin(current, sch, joinpred);
    		 Plan indexPlan = makeIndexJoin(current, sch);
-   		 Plan nestedPlan = makeNestedBlockJoin(current, sch, joinpred);
+   		 Plan nestedPlan = makeNestedLoopJoin(current, sch, joinpred);
    		 Plan hashPlan = makeHashJoin(current, sch, joinpred);
    		
    		// if block accessed by each individual plan is cheaper than the current cheapest, override
@@ -158,23 +158,23 @@ class TablePlanner {
 		Plan p = null;
 		String[] fields = pred.toString().split("=");
 		
-		if(curr_p.schema().hasField(fields[0]) && myplan.schema().hasField(fields[1])) {			
+		if (curr_p.schema().hasField(fields[0]) && myplan.schema().hasField(fields[1])) {			
 			p = new MergeJoinPlan(tx, curr_p, myplan, fields[0], fields[1]);
 		} else if (curr_p.schema().hasField(fields[1]) && myplan.schema().hasField(fields[0])) {
 			p = new MergeJoinPlan(tx, curr_p, myplan, fields[1], fields[0]);
-		 }else {
+		} else {
 			return null;
 		}
 		p = addSelectPred(p);
 		return addJoinPred(p, sch);
 	}
    
-   private Plan makeNestedBlockJoin(Plan curr_p, Schema sch, Predicate pred) {
+   private Plan makeNestedLoopJoin(Plan curr_p, Schema sch, Predicate pred) {
 
 		Plan p = null;
 		String[] fields = pred.toString().split("=");
 		
-		if(curr_p.schema().hasField(fields[0]) && myplan.schema().hasField(fields[1])) {			
+		if (curr_p.schema().hasField(fields[0]) && myplan.schema().hasField(fields[1])) {			
 			p = new NestedLoopJoinPlan(tx, curr_p, myplan, fields[0], fields[1]);
 		} else if(curr_p.schema().hasField(fields[1]) && myplan.schema().hasField(fields[0])) {
 			p = new NestedLoopJoinPlan(tx, curr_p, myplan, fields[1], fields[0]);
@@ -189,11 +189,11 @@ class TablePlanner {
 	   
 		Plan p = null;
 		String[] fields = pred.toString().split("=");
-		if(curr_p.schema().hasField(fields[0]) && myplan.schema().hasField(fields[1])) {			
+		if (curr_p.schema().hasField(fields[0]) && myplan.schema().hasField(fields[1])) {			
 			p = new HashJoinPlan(tx, curr_p, myplan, fields[0], fields[1]);
 		} else if(curr_p.schema().hasField(fields[1]) && myplan.schema().hasField(fields[0])) {
 			p = new HashJoinPlan(tx, curr_p, myplan, fields[1], fields[0]);
-		 }else {
+		} else {
 			return null;
 		}
 		p = addSelectPred(p);
