@@ -136,6 +136,15 @@ public class Predicate {
       }
       return null;
    }
+   
+   public String fieldComparator(String fldname) {
+		for (Term t : terms) {
+			String s = t.equatesWithField(fldname);
+			if (s != null)
+				return t.getOperator();
+		}
+		return null;
+	}
 
    public String toString() {
       Iterator<Term> iter = terms.iterator();

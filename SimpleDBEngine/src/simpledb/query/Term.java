@@ -162,6 +162,10 @@ public class Term {
       return lhs.appliesTo(sch) && rhs.appliesTo(sch);
    }
    
+   public String getOperator() {
+	   return this.operator;
+   }
+   
    public String toString() {
       return lhs.toString() + "=" + rhs.toString();
    }
