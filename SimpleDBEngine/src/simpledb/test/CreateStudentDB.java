@@ -11,18 +11,18 @@ public class CreateStudentDB {
 
 		// analogous to the connection
 		Transaction tx  = db.newTx();
-		Planner planner = db.planner();
+		Planner planner1 = db.planner();
 
 
-		String s = "create table STUDENT(SId int, SName varchar(10), MajorId int, GradYear int)";
-		planner.executeUpdate(s, tx);
+		String s1 = "create table STUDENT(SId int, SName varchar(10), MajorId int, GradYear int)";
+		planner1.executeUpdate(s1, tx);
 		System.out.println("Table STUDENT created.");
 		
-		s = "create index testindex on STUDENT (MajorId) using btree";
-		planner.executeUpdate(s, tx);
+		s1 = "create index testindex on STUDENT (MajorId) using btree";
+		planner1.executeUpdate(s1, tx);
 
-		s = "insert into STUDENT(SId, SName, MajorId, GradYear) values ";
-		String[] studvals = {"(1, 'joe', 10, 2021)",
+		s1 = "insert into STUDENT(SId, SName, MajorId, GradYear) values ";
+		String[] studvals1 = {"(1, 'joe', 10, 2021)",
 				"(2, 'amy', 20, 2020)",
 				"(3, 'max', 10, 2022)",
 				"(4, 'sue', 20, 2022)",
@@ -31,67 +31,67 @@ public class CreateStudentDB {
 				"(7, 'art', 30, 2021)",
 				"(8, 'pat', 20, 2019)",
 		"(9, 'lee', 10, 2021)"};
-		for (int i=0; i<studvals.length; i++)
-			planner.executeUpdate(s + studvals[i], tx);
+		for (int i=0; i<studvals1.length; i++)
+			planner1.executeUpdate(s1 + studvals1[i], tx);
 		System.out.println("STUDENT records inserted.");
 
-		s = "create table DEPT(DId int, DName varchar(8))";
-		planner.executeUpdate(s, tx);
+		s1 = "create table DEPT(DId int, DName varchar(8))";
+		planner1.executeUpdate(s1, tx);
 		System.out.println("Table DEPT created.");
 
-		s = "insert into DEPT(DId, DName) values ";
-		String[] deptvals = {"(10, 'compsci')",
+		s1 = "insert into DEPT(DId, DName) values ";
+		String[] deptvals1 = {"(10, 'compsci')",
 				"(20, 'math')",
 		"(30, 'drama')"};
-		for (int i=0; i<deptvals.length; i++)
-			planner.executeUpdate(s + deptvals[i], tx);
+		for (int i=0; i<deptvals1.length; i++)
+			planner1.executeUpdate(s1 + deptvals1[i], tx);
 		System.out.println("DEPT records inserted.");
 
-		s = "create table COURSE(CId int, Title varchar(20), DeptId int)";
-		planner.executeUpdate(s, tx);
+		s1 = "create table COURSE(CId int, Title varchar(20), DeptId int)";
+		planner1.executeUpdate(s1, tx);
 		System.out.println("Table COURSE created.");
 
-		s = "insert into COURSE(CId, Title, DeptId) values ";
-		String[] coursevals = {"(12, 'db systems', 10)",
+		s1 = "insert into COURSE(CId, Title, DeptId) values ";
+		String[] coursevals1 = {"(12, 'db systems', 10)",
 				"(22, 'compilers', 10)",
 				"(32, 'calculus', 20)",
 				"(42, 'algebra', 20)",
 				"(52, 'acting', 30)",
 		"(62, 'elocution', 30)"};
-		for (int i=0; i<coursevals.length; i++)
-			planner.executeUpdate(s + coursevals[i], tx);
+		for (int i=0; i<coursevals1.length; i++)
+			planner1.executeUpdate(s1 + coursevals1[i], tx);
 		System.out.println("COURSE records inserted.");
 
-		s = "create table SECTION(SectId int, CourseId int, Prof varchar(8), YearOffered int)";
-		planner.executeUpdate(s, tx);
+		s1 = "create table SECTION(SectId int, CourseId int, Prof varchar(8), YearOffered int)";
+		planner1.executeUpdate(s1, tx);
 		System.out.println("Table SECTION created.");
 
-		s = "insert into SECTION(SectId, CourseId, Prof, YearOffered) values ";
-		String[] sectvals = {"(13, 12, 'turing', 2018)",
+		s1 = "insert into SECTION(SectId, CourseId, Prof, YearOffered) values ";
+		String[] sectvals1 = {"(13, 12, 'turing', 2018)",
 				"(23, 12, 'turing', 2019)",
 				"(33, 32, 'newton', 2019)",
 				"(43, 32, 'einstein', 2017)",
 		"(53, 62, 'brando', 2018)"};
-		for (int i=0; i<sectvals.length; i++)
-			planner.executeUpdate(s + sectvals[i], tx);
+		for (int i=0; i<sectvals1.length; i++)
+			planner1.executeUpdate(s1 + sectvals1[i], tx);
 		System.out.println("SECTION records inserted.");
 
-		s = "create table ENROLL(EId int, StudentId int, SectionId int, Grade varchar(2))";
-		planner.executeUpdate(s, tx);
+		s1 = "create table ENROLL(EId int, StudentId int, SectionId int, Grade varchar(2))";
+		planner1.executeUpdate(s1, tx);
 		System.out.println("Table ENROLL created.");
 		
-		s = "create index testindex on ENROLL(studentID) using hash";
-		planner.executeUpdate(s, tx);
+		s1 = "create index testindex on ENROLL(studentID) using hash";
+		planner1.executeUpdate(s1, tx);
 
-		s = "insert into ENROLL(EId, StudentId, SectionId, Grade) values ";
-		String[] enrollvals = {"(14, 1, 13, 'A')",
+		s1 = "insert into ENROLL(EId, StudentId, SectionId, Grade) values ";
+		String[] enrollvals1 = {"(14, 1, 13, 'A')",
 				"(24, 1, 43, 'C' )",
 				"(34, 2, 43, 'B+')",
 				"(44, 4, 33, 'B' )",
 				"(54, 4, 53, 'A' )",
 		"(64, 6, 53, 'A' )"};
-		for (int i=0; i<enrollvals.length; i++)
-			planner.executeUpdate(s + enrollvals[i], tx);
+		for (int i=0; i<enrollvals1.length; i++)
+			planner1.executeUpdate(s1 + enrollvals1[i], tx);
 		System.out.println("ENROLL records inserted.");
 		
 		tx.commit();
@@ -99,17 +99,17 @@ public class CreateStudentDB {
 		// Transaction with new tables begins here
 
 		Transaction tx2  = db.newTx();
-		Planner planner = db.planner();
+		Planner planner2 = db.planner();
 
 
-		String s = "create table STUDENT2(SId int, SName varchar(10), MajorId int, GradYear int)";
-		planner.executeUpdate(s, tx2);
+		String s2 = "create table STUDENT2(SId int, SName varchar(10), MajorId int, GradYear int)";
+		planner2.executeUpdate(s2, tx2);
 		System.out.println("Table STUDENT2 created.");
 
-		s = "create index testindex on STUDENT2 (MajorId) using btree";
-		planner.executeUpdate(s, tx2);
+		s2 = "create index testindex on STUDENT2 (MajorId) using btree";
+		planner2.executeUpdate(s2, tx2);
 
-		s = "insert into STUDENT2(SId, SName, MajorId, GradYear) values ";
+		s2 = "insert into STUDENT2(SId, SName, MajorId, GradYear) values ";
 		String[] studvals = {"(1, 'liam', 20, 2022)",
 				"(2, 'olivia', 30, 2023)",
 				"(3, 'noah', 10, 2012)",
@@ -125,7 +125,7 @@ public class CreateStudentDB {
 				"(13, 'benjamin', 30, 2017)",
 				"(14, 'isabella', 30, 2018)",
 				"(15, 'lucas', 30, 2016)",
-				"(16, 'mia', 30, 2020",
+				"(16, 'mia', 30, 2020)",
 				"(17, 'henry', 30, 2021)",
 				"(18, 'evelyn', 30, 2020)",
 				"(19, 'alexander', 30, 2017)",
@@ -155,58 +155,58 @@ public class CreateStudentDB {
 				"(43, 'rose', 30, 2017)",
 				"(44, 'boris', 30, 2019)"};
 		for (int i=0; i<studvals.length; i++)
-			planner.executeUpdate(s + studvals[i], tx2);
+			planner2.executeUpdate(s2 + studvals[i], tx2);
 		System.out.println("STUDENT2 records inserted.");
 
-		s = "create table DEPT2(DId int, DName varchar(8))";
-		planner.executeUpdate(s, tx2);
+		s2 = "create table DEPT2(DId int, DName varchar(8))";
+		planner2.executeUpdate(s2, tx2);
 		System.out.println("Table DEPT2 created.");
 
-		s = "insert into DEPT2(DId, DName) values ";
-		String[] deptvals = {"(10, 'FASS')",
+		s2 = "insert into DEPT2(DId, DName) values ";
+		String[] deptvals2 = {"(10, 'FASS')",
 				"(20, 'FOS')",
 				"(30, 'COM')"};
-		for (int i=0; i<deptvals.length; i++)
-			planner.executeUpdate(s + deptvals[i], tx2);
+		for (int i=0; i<deptvals2.length; i++)
+			planner2.executeUpdate(s2 + deptvals2[i], tx2);
 		System.out.println("DEPT2 records inserted.");
 
-		s = "create table COURSE2(CId int, Title varchar(20), DeptId int)";
-		planner.executeUpdate(s, tx2);
+		s2 = "create table COURSE2(CId int, Title varchar(20), DeptId int)";
+		planner2.executeUpdate(s2, tx2);
 		System.out.println("Table COURSE2 created.");
 
-		s = "insert into COURSE2(CId, Title, DeptId) values ";
-		String[] coursevals = {"(12, 'db systems', 30)",
+		s2 = "insert into COURSE2(CId, Title, DeptId) values ";
+		String[] coursevals2 = {"(12, 'db systems', 30)",
 				"(22, 'compilers', 30)",
 				"(32, 'calculus', 20)",
 				"(42, 'algebra', 20)",
 				"(52, 'acting', 10)",
 				"(62, 'elocution', 10)"};
-		for (int i=0; i<coursevals.length; i++)
-			planner.executeUpdate(s + coursevals[i], tx2);
+		for (int i=0; i<coursevals2.length; i++)
+			planner2.executeUpdate(s2 + coursevals2[i], tx2);
 		System.out.println("COURSE2 records inserted.");
 
-		s = "create table SECTION2(SectId int, CourseId int, Prof varchar(8), YearOffered int)";
-		planner.executeUpdate(s, tx2);
+		s2 = "create table SECTION2(SectId int, CourseId int, Prof varchar(8), YearOffered int)";
+		planner2.executeUpdate(s2, tx2);
 		System.out.println("Table SECTION2 created.");
 
-		s = "insert into SECTION2(SectId, CourseId, Prof, YearOffered) values ";
+		s2 = "insert into SECTION2(SectId, CourseId, Prof, YearOffered) values ";
 		String[] sectvals = {"(13, 12, 'knuth', 2022)",
 				"(23, 12, 'knuth', 2013)",
 				"(33, 32, 'leibniz', 2018)",
 				"(43, 32, 'newton', 2016)",
 				"(53, 62, 'shelley', 2022)"};
 		for (int i=0; i<sectvals.length; i++)
-			planner.executeUpdate(s + sectvals[i], tx2);
+			planner2.executeUpdate(s2 + sectvals[i], tx2);
 		System.out.println("SECTION2 records inserted.");
 
-		s = "create table ENROLL2(EId int, StudentId int, SectionId int, Grade varchar(2))";
-		planner.executeUpdate(s, tx2);
+		s2 = "create table ENROLL2(EId int, StudentId int, SectionId int, Grade varchar(2))";
+		planner2.executeUpdate(s2, tx2);
 		System.out.println("Table ENROLL2 created.");
 
-		s = "create index testindex on ENROLL2(studentID) using hash";
-		planner.executeUpdate(s, tx2);
+		s2 = "create index testindex on ENROLL2(studentID) using hash";
+		planner2.executeUpdate(s2, tx2);
 
-		s = "insert into ENROLL2(EId, StudentId, SectionId, Grade) values ";
+		s2 = "insert into ENROLL2(EId, StudentId, SectionId, Grade) values ";
 		String[] enrollvals = {"(14, 1, 13, 'A+')",
 				"(24, 1, 43, 'D' )",
 				"(34, 2, 43, 'D+')",
@@ -243,7 +243,7 @@ public class CreateStudentDB {
 				"(344, 26, 43, 'C' )",
 				"(354, 36, 13, 'B+' )",
 				"(364, 6, 23, 'C-' )",
-				"(374, 13, 33, 'A' )"
+				"(374, 13, 33, 'A' )",
 				"(384, 22, 13, 'B' )",
 				"(394, 40, 53, 'B' )",
 				"(404, 10, 43, 'C+' )",
@@ -252,7 +252,7 @@ public class CreateStudentDB {
 				"(434, 6, 33, 'A' )",
 				"(444, 14, 33, 'B' )"};
 		for (int i=0; i<enrollvals.length; i++)
-			planner.executeUpdate(s + enrollvals[i], tx2);
+			planner2.executeUpdate(s2 + enrollvals[i], tx2);
 		System.out.println("ENROLL2 records inserted.");
 
 		tx2.commit();
