@@ -13,15 +13,17 @@ public class QueryData {
    private Collection<String> tables;
    private Predicate pred;
    private List<String> orderByAttributesList;
+   private boolean distinct;
    
    /**
     * Saves the field and table list and predicate.
     */
-   public QueryData(List<String> fields, Collection<String> tables, Predicate pred, List<String> orderByAttributesList) {
+   public QueryData(List<String> fields, Collection<String> tables, Predicate pred, List<String> orderByAttributesList, boolean distinct) {
       this.fields = fields;
       this.tables = tables;
       this.pred = pred;
       this.orderByAttributesList = orderByAttributesList;
+      this.distinct = distinct;
    }
    
    /**
@@ -54,8 +56,17 @@ public class QueryData {
     * records should be in the output table.
     * @return the query predicate
     */
-   public List<String> orderByAttributeLst() {
+   public List<String> orderByAttributeList() {
       return orderByAttributesList;
+   }
+   
+   /**
+    * Returns whether the given select query specifies 'distinct' or not.
+    * @return boolean indicating whether distinct
+    */
+   
+   public boolean isDistinct {
+	   return distinct;
    }
    
    public String toString() {
