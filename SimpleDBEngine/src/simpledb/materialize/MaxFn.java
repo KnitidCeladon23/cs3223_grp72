@@ -8,14 +8,16 @@ import simpledb.query.*;
  */
 public class MaxFn implements AggregationFn {
    private String fldname;
+   private boolean isDistinct;
    private Constant val;
    
    /**
     * Create a max aggregation function for the specified field.
     * @param fldname the name of the aggregated field
     */
-   public MaxFn(String fldname) {
+   public MaxFn(String fldname, boolean isDistinct) {
       this.fldname = fldname;
+      this.isDistinct = isDistinct;
    }
    
    /**
@@ -47,10 +49,26 @@ public class MaxFn implements AggregationFn {
    }
    
    /**
+    * Return the field name to be aggregated on.
+    * @return the field name to be aggregated on
+    */
+   public String field() {
+      return fldname;
+   }
+   
+   /**
     * Return the current maximum.
     * @see simpledb.materialize.AggregationFn#value()
     */
    public Constant value() {
       return val;
+   }
+   
+   /**
+    * Return if the aggregated value is always an integer.
+    * @return if the aggregated value is always an integer
+    */
+   public boolean isAlwaysInteger() {
+      return true;
    }
 }

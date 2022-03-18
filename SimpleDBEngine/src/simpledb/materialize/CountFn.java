@@ -8,14 +8,16 @@ import simpledb.query.*;
  */
 public class CountFn implements AggregationFn {
    private String fldname;
+   private boolean isDistinct;
    private int count;
    
    /**
     * Create a count aggregation function for the specified field.
     * @param fldname the name of the aggregated field
     */
-   public CountFn(String fldname) {
+   public CountFn(String fldname, boolean isDistinct) {
       this.fldname = fldname;
+      this.isDistinct = isDistinct;
    }
    
    /**
