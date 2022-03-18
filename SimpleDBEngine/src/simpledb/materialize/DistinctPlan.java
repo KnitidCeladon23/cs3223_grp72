@@ -49,7 +49,7 @@ public class DistinctPlan implements Plan {
         List<TempTable> runs = splitIntoRuns(src);
         src.close();
 
-        if (runs.size() == 1) runs.add(removeDuplicates(runs.get(0)));
+        if (runs.size() == 1) runs.add(removeDuplicate(runs.get(0)));
         while (runs.size() > 1) runs = doAMergeIteration(runs);
 
         return runs.get(0).open();

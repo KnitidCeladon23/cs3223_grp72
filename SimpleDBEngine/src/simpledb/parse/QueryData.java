@@ -64,8 +64,7 @@ public class QueryData {
     * Returns whether the given select query specifies 'distinct' or not.
     * @return boolean indicating whether distinct
     */
-   
-   public boolean isDistinct {
+   public boolean isDistinct() {
 	   return distinct;
    }
    
