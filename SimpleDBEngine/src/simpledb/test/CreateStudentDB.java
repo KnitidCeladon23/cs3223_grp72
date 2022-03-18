@@ -96,5 +96,166 @@ public class CreateStudentDB {
 		
 		tx.commit();
 
+		// Transaction with new tables begins here
+
+		Transaction tx2  = db.newTx();
+		Planner planner = db.planner();
+
+
+		String s = "create table STUDENT2(SId int, SName varchar(10), MajorId int, GradYear int)";
+		planner.executeUpdate(s, tx2);
+		System.out.println("Table STUDENT2 created.");
+
+		s = "create index testindex on STUDENT2 (MajorId) using btree";
+		planner.executeUpdate(s, tx2);
+
+		s = "insert into STUDENT2(SId, SName, MajorId, GradYear) values ";
+		String[] studvals = {"(1, 'liam', 20, 2022)",
+				"(2, 'olivia', 30, 2023)",
+				"(3, 'noah', 10, 2012)",
+				"(4, 'emma', 10, 2020)",
+				"(5, 'oliver', 30, 2022)",
+				"(6, 'ava', 10, 2020)",
+				"(7, 'elijah', 20, 2018)",
+				"(8, 'charlotte', 20, 2019)",
+				"(9, 'william', 30, 2012)",
+				"(10, 'sophia', 30, 2020)",
+				"(11, 'james', 30, 2018)",
+				"(12, 'amelia', 30, 2019)",
+				"(13, 'benjamin', 30, 2017)",
+				"(14, 'isabella', 30, 2018)",
+				"(15, 'lucas', 30, 2016)",
+				"(16, 'mia', 30, 2020",
+				"(17, 'henry', 30, 2021)",
+				"(18, 'evelyn', 30, 2020)",
+				"(19, 'alexander', 30, 2017)",
+				"(20, 'harper', 30, 2012)",
+				"(21, 'mason', 30, 2022)",
+				"(22, 'camila', 30, 2017)",
+				"(23, 'michael', 30, 2018)",
+				"(24, 'gianna', 30, 2018)",
+				"(25, 'ethan', 30, 2022)",
+				"(26, 'abigail', 30, 2018)",
+				"(27, 'daniel', 30, 2016)",
+				"(28, 'luna', 30, 2017)",
+				"(29, 'jacob', 30, 2021)",
+				"(30, 'ella', 30, 2020)",
+				"(31, 'logan', 30, 2016)",
+				"(32, 'elizabeth', 30, 2019)",
+				"(33, 'jackson', 30, 2019)",
+				"(34, 'sofia', 30, 2016)",
+				"(35, 'levi', 30, 2022)",
+				"(36, 'emily', 30, 2023)",
+				"(37, 'sebastian', 30, 2020)",
+				"(38, 'avery', 30, 2015)",
+				"(39, 'louis', 30, 2015)",
+				"(40, 'stanley', 30, 2022)",
+				"(41, 'hannah', 30, 2020)",
+				"(42, 'nathan', 30, 2018)",
+				"(43, 'rose', 30, 2017)",
+				"(44, 'boris', 30, 2019)"};
+		for (int i=0; i<studvals.length; i++)
+			planner.executeUpdate(s + studvals[i], tx2);
+		System.out.println("STUDENT2 records inserted.");
+
+		s = "create table DEPT2(DId int, DName varchar(8))";
+		planner.executeUpdate(s, tx2);
+		System.out.println("Table DEPT2 created.");
+
+		s = "insert into DEPT2(DId, DName) values ";
+		String[] deptvals = {"(10, 'FASS')",
+				"(20, 'FOS')",
+				"(30, 'COM')"};
+		for (int i=0; i<deptvals.length; i++)
+			planner.executeUpdate(s + deptvals[i], tx2);
+		System.out.println("DEPT2 records inserted.");
+
+		s = "create table COURSE2(CId int, Title varchar(20), DeptId int)";
+		planner.executeUpdate(s, tx2);
+		System.out.println("Table COURSE2 created.");
+
+		s = "insert into COURSE2(CId, Title, DeptId) values ";
+		String[] coursevals = {"(12, 'db systems', 30)",
+				"(22, 'compilers', 30)",
+				"(32, 'calculus', 20)",
+				"(42, 'algebra', 20)",
+				"(52, 'acting', 10)",
+				"(62, 'elocution', 10)"};
+		for (int i=0; i<coursevals.length; i++)
+			planner.executeUpdate(s + coursevals[i], tx2);
+		System.out.println("COURSE2 records inserted.");
+
+		s = "create table SECTION2(SectId int, CourseId int, Prof varchar(8), YearOffered int)";
+		planner.executeUpdate(s, tx2);
+		System.out.println("Table SECTION2 created.");
+
+		s = "insert into SECTION2(SectId, CourseId, Prof, YearOffered) values ";
+		String[] sectvals = {"(13, 12, 'knuth', 2022)",
+				"(23, 12, 'knuth', 2013)",
+				"(33, 32, 'leibniz', 2018)",
+				"(43, 32, 'newton', 2016)",
+				"(53, 62, 'shelley', 2022)"};
+		for (int i=0; i<sectvals.length; i++)
+			planner.executeUpdate(s + sectvals[i], tx2);
+		System.out.println("SECTION2 records inserted.");
+
+		s = "create table ENROLL2(EId int, StudentId int, SectionId int, Grade varchar(2))";
+		planner.executeUpdate(s, tx2);
+		System.out.println("Table ENROLL2 created.");
+
+		s = "create index testindex on ENROLL2(studentID) using hash";
+		planner.executeUpdate(s, tx2);
+
+		s = "insert into ENROLL2(EId, StudentId, SectionId, Grade) values ";
+		String[] enrollvals = {"(14, 1, 13, 'A+')",
+				"(24, 1, 43, 'D' )",
+				"(34, 2, 43, 'D+')",
+				"(44, 4, 33, 'C' )",
+				"(54, 4, 53, 'B' )",
+				"(64, 6, 53, 'A+' )",
+				"(74, 8, 13, 'B-' )",
+				"(84, 11, 23, 'C-' )",
+				"(94, 4, 23, 'B' )",
+				"(104, 14, 13, 'A-' )",
+				"(114, 22, 43, 'D' )",
+				"(124, 43, 23, 'A' )",
+				"(134, 16, 13, 'C' )",
+				"(144, 26, 43, 'A-' )",
+				"(154, 32, 53, 'B+' )",
+				"(164, 35, 53, 'C-' )",
+				"(174, 38, 53, 'A+' )",
+				"(184, 19, 53, 'F' )",
+				"(194, 18, 13, 'A' )",
+				"(204, 17, 33, 'B' )",
+				"(214, 43, 43, 'C-' )",
+				"(224, 31, 23, 'C+' )",
+				"(234, 26, 53, 'C-' )",
+				"(244, 23, 13, 'A-' )",
+				"(254, 28, 33, 'B-' )",
+				"(264, 29, 23, 'A' )",
+				"(274, 33, 13, 'B' )",
+				"(284, 11, 43, 'C+' )",
+				"(294, 17, 23, 'B-' )",
+				"(304, 41, 13, 'A' )",
+				"(314, 14, 23, 'A+' )",
+				"(324, 19, 23, 'C' )",
+				"(334, 12, 53, 'D+' )",
+				"(344, 26, 43, 'C' )",
+				"(354, 36, 13, 'B+' )",
+				"(364, 6, 23, 'C-' )",
+				"(374, 13, 33, 'A' )"
+				"(384, 22, 13, 'B' )",
+				"(394, 40, 53, 'B' )",
+				"(404, 10, 43, 'C+' )",
+				"(414, 29, 43, 'C-' )",
+				"(424, 33, 23, 'A-' )",
+				"(434, 6, 33, 'A' )",
+				"(444, 14, 33, 'B' )"};
+		for (int i=0; i<enrollvals.length; i++)
+			planner.executeUpdate(s + enrollvals[i], tx2);
+		System.out.println("ENROLL2 records inserted.");
+
+		tx2.commit();
+
 	}
 }
