@@ -2,6 +2,7 @@ package simpledb.opt;
 
 import java.util.*;
 import simpledb.tx.Transaction;
+import simpledb.materialize.GroupByPlan;
 import simpledb.metadata.MetadataMgr;
 import simpledb.parse.QueryData;
 import simpledb.plan.*;
@@ -47,7 +48,14 @@ public class HeuristicQueryPlanner implements QueryPlanner {
       }
       
       // Step 4.  Project on the field names and return
-      return new ProjectPlan(currentplan, data.fields());
+      Plan p = new ProjectPlan(currentplan, data.fields());
+      
+      // if group by clause or aggregation function is present
+      if (!data.groupfields().isEmpty() || !data.aggregations().isEmpty()) {
+         p = new GroupByPlan(tx, p, data.groupfields(), data.aggregations());
+      }
+      
+      return p;
    }
    
    private Plan getLowestSelectPlan() {

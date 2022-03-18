@@ -9,6 +9,7 @@ import java.io.*;
  */
 public class Lexer {
    private Collection<String> keywords;
+   private Collection<String> aggregations;
    private Collection<String> comparisonOperators;
    private StreamTokenizer tok;
    
@@ -18,6 +19,7 @@ public class Lexer {
     */
    public Lexer(String s) {
       initKeywords();
+      initAggregation();
       tok = new StreamTokenizer(new StringReader(s));
       tok.ordinaryChar('.');   //disallow "." in identifiers
       tok.wordChars('_', '_'); //allow "_" in identifiers
@@ -68,6 +70,10 @@ public class Lexer {
     */
    public boolean matchId() {
       return  tok.ttype==StreamTokenizer.TT_WORD && !keywords.contains(tok.sval);
+   }
+   
+   public boolean matchAggregation() {
+      return tok.ttype == StreamTokenizer.TT_WORD && aggregations.contains(tok.sval);
    }
    
 //Methods to "eat" the current token
@@ -147,6 +153,14 @@ public class Lexer {
        return opr;
    }
    
+   public String eatAggregation() {
+	      if (!matchAggregation())
+	         throw new BadSyntaxException();
+	      String aggregation = tok.sval;
+	      nextToken();
+	      return aggregation;
+	   }
+   
    private void initComparisonOperators() {
        comparisonOperators = Arrays.asList("=", "<", "<=", ">", ">=", "!=", "<>");
    }
@@ -208,5 +222,9 @@ public class Lexer {
                                "insert", "into", "values", "delete", "update", "set", 
                                "create", "table", "int", "varchar", "view", "as", "index", "on",
                                "order", "by", "using", "hash", "btree", "distinct");
+   }
+   
+   private void initAggregation() {
+      aggregations = Arrays.asList("sum", "count", "avg", "min", "max");
    }
 }

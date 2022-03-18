@@ -2,6 +2,12 @@ package simpledb.parse;
 
 import java.util.*;
 
+import simpledb.materialize.AggregationFn;
+import simpledb.materialize.AvgFn;
+import simpledb.materialize.CountFn;
+import simpledb.materialize.MaxFn;
+import simpledb.materialize.MinFn;
+import simpledb.materialize.SumFn;
 import simpledb.query.*;
 import simpledb.record.*;
 
@@ -20,6 +26,10 @@ public class Parser {
    
    public String field() {
       return lex.eatId();
+   }
+   
+   public String aggregation() {
+       return lex.eatAggregation();
    }
    
    public Constant constant() {
@@ -64,8 +74,39 @@ public class Parser {
 			lex.eatKeyword("distinct");
 			distinct = true;
 	  }
+      List<String> fields = new ArrayList<>();
+      List<AggregationFn> aggregations = new ArrayList<>();
       
-      List<String> fields = selectList();
+      while (true) {
+          String field;
+          if (lex.matchAggregation()) {
+              String aggregation = aggregation();
+              boolean isDistinct = false;
+              try {
+                  lex.eatDelim('(');
+              } catch (BadSyntaxException e) {
+                  throw new BadSyntaxException("Missing delimiter'(' in aggregation function");
+              }
+              if (lex.matchKeyword("distinct")) {
+                  isDistinct = true;
+                  lex.eatKeyword("distinct");
+              }
+              field = field();
+              lex.eatDelim(')');
+              aggregations.add(getAggregationFn(aggregation, field, isDistinct));
+              
+          } else {
+              field = field();
+          }
+          fields.add(field);
+
+          if (!lex.matchDelim(',')) {
+              break;
+          } else {
+              lex.eatDelim(',');
+          }
+      }
+      
       lex.eatKeyword("from");
       Collection<String> tables = tableList();
       Predicate pred = new Predicate();
@@ -82,11 +123,30 @@ public class Parser {
     	  orderByAttributesList = attributesList();
       }
       
-      return new QueryData(fields, tables, pred, orderByAttributesList, distinct);
+      //group by
+      List<String> groupfields = new ArrayList<>();
+      if (lex.matchKeyword("group")) {
+          lex.eatKeyword("group");
+          lex.eatKeyword("by");
+          groupfields = groupfieldList();
+      }
+      
+      return new QueryData(fields, tables, pred, orderByAttributesList, distinct, aggregations, groupfields);
+   }
+   
+   private List<String> groupfieldList() {
+       List<String> groupfields = new ArrayList<>();
+       groupfields.add(field());
+       if (lex.matchDelim(',')) {
+           lex.eatDelim(',');
+           groupfields.addAll(groupfieldList());
+       }
+       return groupfields;
    }
    
    private List<String> attributesList() {
 	      List<String> L = new ArrayList<String>();
+	      
 	      L.add(field());
 	      if (lex.matchDelim(',')) {
 	         lex.eatDelim(',');
@@ -114,6 +174,25 @@ public class Parser {
       }
       return L;
    }
+   
+   private AggregationFn getAggregationFn(String aggregation, String field, boolean isDistinct) {
+       
+       switch (aggregation.toLowerCase()) {
+           case "avg":
+               return new AvgFn(field, isDistinct);
+           case "count":
+               return new CountFn(field, isDistinct);
+           case "max":
+               return new MaxFn(field, isDistinct);
+           case "min":
+               return new MinFn(field, isDistinct);
+           case "sum":
+               return new SumFn(field, isDistinct);
+           default:
+               throw new BadSyntaxException("Invalid aggregation function");
+       }
+   }
+
    
 // Methods for parsing the various update commands
    
