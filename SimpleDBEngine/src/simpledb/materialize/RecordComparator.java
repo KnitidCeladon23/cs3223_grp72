@@ -42,4 +42,13 @@ public class RecordComparator implements Comparator<Scan> {
       }
       return 0;
    }
+
+   public boolean compareDistinct(Scan s1, Scan s2) {
+      for (String s : fields) {
+         int output = s1.getVal(s).compareTo(s2.getVal(s));
+         if (output == 0)
+            return false;
+      }
+      return true;
+   }
 }
