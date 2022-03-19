@@ -28,7 +28,11 @@ public class GroupByPlan implements Plan {
     * @param tx the calling transaction
     */
    public GroupByPlan(Transaction tx, Plan p, List<String> groupfields, List<AggregationFn> aggfns) {
-      this.p = new SortPlan(tx, p, groupfields);
+	  LinkedHashMap<String, Boolean> sortfields = new LinkedHashMap<>();
+	  for (String field : groupfields) {
+		  sortfields.put(field, true);
+      }
+      this.p = new SortPlan(tx, p, sortfields);
       this.groupfields = groupfields;
       this.aggfns = aggfns;
       for (String fldname : groupfields)

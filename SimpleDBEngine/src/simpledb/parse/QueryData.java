@@ -13,7 +13,7 @@ public class QueryData {
    private List<String> fields;
    private Collection<String> tables;
    private Predicate pred;
-   private List<String> orderByAttributesList;
+   private LinkedHashMap<String, Boolean> orderByAttributesList;
    private boolean distinct;
    private List<AggregationFn> aggregations;
    private List<String> groupfields;
@@ -21,7 +21,7 @@ public class QueryData {
    /**
     * Saves the field and table list and predicate.
     */
-   public QueryData(List<String> fields, Collection<String> tables, Predicate pred, List<String> orderByAttributesList,
+   public QueryData(List<String> fields, Collection<String> tables, Predicate pred, LinkedHashMap<String, Boolean> orderByAttributesList,
 		   boolean distinct, List<AggregationFn> aggregations, List<String> groupfields) {
       this.fields = fields;
       this.tables = tables;
@@ -62,7 +62,7 @@ public class QueryData {
     * records should be in the output table.
     * @return the query predicate
     */
-   public List<String> orderByAttributeList() {
+   public LinkedHashMap<String, Boolean> orderByAttributeList() {
       return orderByAttributesList;
    }
    

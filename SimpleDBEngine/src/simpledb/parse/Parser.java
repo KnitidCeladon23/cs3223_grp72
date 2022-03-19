@@ -48,9 +48,9 @@ public class Parser {
    
    public Term term() {
       Expression lhs = expression();
-      lex.eatEquality();
+      String comp = lex.eatEquality();
       Expression rhs = expression();
-      return new Term(lhs, rhs, "=");
+      return new Term(lhs, rhs, comp);
    }
    
    public Predicate predicate() {
@@ -116,17 +116,12 @@ public class Parser {
       }
       
       //order by
-      List<String> orderByAttributesList = new ArrayList<String>();
+      LinkedHashMap<String, Boolean> orderByAttributesList = new LinkedHashMap<>();
+      
       if (lex.matchKeyword("order")) {
     	  lex.eatKeyword("order");
     	  lex.eatKeyword("by");
-    	  boolean isAscending = true;
-    	  if (lex.matchKeyword("asc")) {
-              lex.eatKeyword("asc");
-          } else if (lex.matchKeyword("desc")) {
-              lex.eatKeyword("desc");
-              isAscending = false;
-          }
+    	 
     	  orderByAttributesList = attributesList();
       }
       
@@ -151,16 +146,23 @@ public class Parser {
        return groupfields;
    }
    
-   private List<String> attributesList() {
-	      List<String> L = new ArrayList<String>();
-	      
-	      L.add(field());
-	      if (lex.matchDelim(',')) {
-	         lex.eatDelim(',');
-	         L.addAll(selectList());
-	      }
-	      return L;
-	   }
+   private LinkedHashMap<String, Boolean> attributesList() {
+	  LinkedHashMap<String, Boolean> L = new LinkedHashMap<>();
+	  String fd = field();
+ 	  boolean isAscending = true;
+ 	  if (lex.matchKeyword("asc")) {
+          lex.eatKeyword("asc");
+      } else if (lex.matchKeyword("desc")) {
+          lex.eatKeyword("desc");
+          isAscending = false;
+      }
+ 	  L.put(fd, isAscending);
+	  if (lex.matchDelim(',')) {
+	     lex.eatDelim(',');
+	     L.putAll(attributesList());
+	  }
+	  return L;
+	}
    
    private List<String> selectList() {
       List<String> L = new ArrayList<String>();
