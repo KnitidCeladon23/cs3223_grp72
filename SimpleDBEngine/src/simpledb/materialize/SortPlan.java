@@ -53,13 +53,9 @@ public class SortPlan implements Plan {
     * @see simpledb.plan.Plan#blocksAccessed()
     */
    public int blocksAccessed() {
-	   Plan mp = new MaterializePlan(tx, p); // not opened; just for analysis
-       int carryover = Math.max(p.blocksAccessed() - mp.blocksAccessed(), 0);
-       int sortedRuns = (int) Math.ceil(mp.recordsOutput() * 1.0 / 2);
-       int passes = (int) Math.ceil(Math.log(sortedRuns) / Math.log(2)) + 1;
-
-       //cost is computed as numPasses * 2 * M
-       return mp.blocksAccessed() * 2 * passes + carryover;
+      // does not include the one-time cost of sorting
+      Plan mp = new MaterializePlan(tx, p); // not opened; just for analysis
+      return mp.blocksAccessed();
    }
    
    /**
