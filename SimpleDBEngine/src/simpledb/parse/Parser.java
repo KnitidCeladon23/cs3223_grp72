@@ -48,7 +48,7 @@ public class Parser {
    
    public Term term() {
       Expression lhs = expression();
-      lex.eatDelim('=');
+      lex.eatEquality();
       Expression rhs = expression();
       return new Term(lhs, rhs, "=");
    }
@@ -120,6 +120,13 @@ public class Parser {
       if (lex.matchKeyword("order")) {
     	  lex.eatKeyword("order");
     	  lex.eatKeyword("by");
+    	  boolean isAscending = true;
+    	  if (lex.matchKeyword("asc")) {
+              lex.eatKeyword("asc");
+          } else if (lex.matchKeyword("desc")) {
+              lex.eatKeyword("desc");
+              isAscending = false;
+          }
     	  orderByAttributesList = attributesList();
       }
       
@@ -347,17 +354,19 @@ public class Parser {
       lex.eatDelim('(');
       String fldname = field();
       lex.eatDelim(')');
-      String structname = "";
-	  lex.eatKeyword("using");
-	  if (lex.matchKeyword("hash")) {
-		  lex.eatKeyword("hash");
-		  structname = "hash";
-	  } else if (lex.matchKeyword("btree")) {
-		  lex.eatKeyword("btree");
-		  structname = "btree";
-	  } else {
-		  throw new BadSyntaxException();
-	  }
+      String structname = "btree";
+      if (lex.matchKeyword("using")) {
+    	  lex.eatKeyword("using");
+    	  if (lex.matchKeyword("hash")) {
+    		  lex.eatKeyword("hash");
+    		  structname = "hash";
+    	  } else if (lex.matchKeyword("btree")) {
+    		  lex.eatKeyword("btree");
+    		  structname = "btree";
+    	  } else {
+    		  throw new BadSyntaxException();
+    	  }
+      }
       
       return new CreateIndexData(idxname, tblname, fldname, structname);
    }

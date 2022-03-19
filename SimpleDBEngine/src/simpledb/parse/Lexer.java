@@ -154,16 +154,49 @@ public class Lexer {
    }
    
    public String eatAggregation() {
-	      if (!matchAggregation())
-	         throw new BadSyntaxException();
-	      String aggregation = tok.sval;
-	      nextToken();
-	      return aggregation;
+	   if (!matchAggregation())
+	       throw new BadSyntaxException();
+	   String aggregation = tok.sval;
+	   nextToken();
+	       return aggregation;
 	   }
    
-   private void initComparisonOperators() {
-       comparisonOperators = Arrays.asList("=", "<", "<=", ">", ">=", "!=", "<>");
-   }
+   public String eatEquality() {
+	      String comparator;
+	      if(matchDelim('<')){
+	         eatDelim('<');
+	         if(matchDelim('=')){
+	            eatDelim('=');
+	            comparator = "<=";
+	         } else if(matchDelim('>')){
+	            eatDelim('>');
+	            comparator = "<>";
+	         } else {
+	            comparator = "<";
+	         }
+	      } else if(matchDelim('>')){
+	         eatDelim('>');
+	         if(matchDelim('=')){
+	            eatDelim('=');
+	            comparator = ">=";
+	         } else {
+	            comparator = ">";
+	         }
+	      } else if(matchDelim('!')){
+	         eatDelim('!');
+	         // no need to check if the match '='
+	         // since after ! must be =
+	         eatDelim('=');
+	         comparator = "!=";
+	      } else if (matchDelim('=')) {
+	         eatDelim('=');
+	         comparator = "=";
+	      } else {
+	         throw new BadSyntaxException();
+	      }
+	      return comparator;
+	   }
+	   
    
    public boolean matchComOpr(String opr) {
        return comparisonOperators.contains(opr);

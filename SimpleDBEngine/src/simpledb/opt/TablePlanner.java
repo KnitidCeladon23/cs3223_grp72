@@ -125,10 +125,10 @@ class TablePlanner {
          if (val != null) {
             IndexInfo ii = indexes.get(fldname);
             if(ii.getStructName().equals("hash")) {
-				String comparatorType = mypred.fieldComparator(fldname);
-				if(comparatorType != null && !comparatorType.equals("=")) 
-					return null;
-			}
+               String comparatorType = mypred.fieldComparator(fldname);
+               if(comparatorType != null && !comparatorType.equals("=")) 
+                  return null;
+            }
             System.out.println("index on " + fldname + " used");
             return new IndexSelectPlan(myplan, ii, val);
          }
@@ -136,22 +136,22 @@ class TablePlanner {
       return null;
    }
    
-   private Plan makeIndexJoin(Plan current, Schema currsch) {
+   private Plan makeIndexJoin(Plan curr_p, Schema sch) {
       for (String fldname : indexes.keySet()) {
          String outerfield = mypred.equatesWithField(fldname);
-         if (outerfield != null && currsch.hasField(outerfield)) {
+         if (outerfield != null && sch.hasField(outerfield)) {
             IndexInfo ii = indexes.get(fldname);
-            Plan p = new IndexJoinPlan(current, myplan, ii, outerfield);
+            Plan p = new IndexJoinPlan(curr_p, myplan, ii, outerfield);
             p = addSelectPred(p);
-            return addJoinPred(p, currsch);
+            return addJoinPred(p, sch);
          }
       }
       return null;
    }
    
-   private Plan makeProductJoin(Plan current, Schema currsch) {
-      Plan p = makeProductPlan(current);
-      return addJoinPred(p, currsch);
+   private Plan makeProductJoin(Plan curr_p, Schema sch) {
+      Plan p = makeProductPlan(curr_p);
+      return addJoinPred(p, sch);
    }
    
    private Plan makeMergeJoin(Plan curr_p, Schema sch, Predicate pred) {
@@ -208,8 +208,8 @@ class TablePlanner {
          return p;
    }
    
-   private Plan addJoinPred(Plan p, Schema currsch) {
-      Predicate joinpred = mypred.joinSubPred(currsch, myschema);
+   private Plan addJoinPred(Plan p, Schema sch) {
+      Predicate joinpred = mypred.joinSubPred(sch, myschema);
       if (joinpred != null)
          return new SelectPlan(p, joinpred);
       else

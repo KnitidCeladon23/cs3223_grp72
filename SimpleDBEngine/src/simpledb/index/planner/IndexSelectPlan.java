@@ -48,6 +48,8 @@ public class IndexSelectPlan implements Plan {
     * @see simpledb.plan.Plan#blocksAccessed()
     */
    public int blocksAccessed() {
+      System.out.println("ii.blocksAccessed: " + ii.blocksAccessed());
+      System.out.println("recordsOutput: " + recordsOutput());
       return ii.blocksAccessed() + recordsOutput();
    }
    

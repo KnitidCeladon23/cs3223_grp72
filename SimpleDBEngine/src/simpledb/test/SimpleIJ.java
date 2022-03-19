@@ -34,6 +34,7 @@ public class SimpleIJ {
    }
 
    private static void doQuery(Statement stmt, String cmd) {
+	  long start = System.currentTimeMillis();
       try (ResultSet rs = stmt.executeQuery(cmd)) {
          ResultSetMetaData md = rs.getMetaData();
          int numcols = md.getColumnCount();
@@ -69,6 +70,8 @@ public class SimpleIJ {
             }
             System.out.println();
          }
+         long finish = System.currentTimeMillis();
+         System.out.println("Time elapsed: " + (finish - start) + "ms");
       }
       catch (SQLException e) {
          System.out.println("SQL Exception: " + e.getMessage());
