@@ -53,5 +53,13 @@ public class HashJoinPlan implements Plan {
 	public Schema schema() {
 		return sch;
 	}
+	
+	 /**
+	    * Returns the String representation of the HashJoin plan.
+	    * @return The corresponding String.
+	    */
+	   public String toString() {
+		   return p1.toString() + " Hash Join + " + p2.toString() + " where " + fldname1 + " = " + fldname2;
+	   }
 
 }

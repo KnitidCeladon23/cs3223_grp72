@@ -121,4 +121,8 @@ public class IndexInfo {
    public String getStructName() {
 	   return structname;
    }
+   
+   public String getFieldName() {
+	   return fldname;
+   }
 }

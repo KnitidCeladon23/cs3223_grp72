@@ -68,11 +68,15 @@ class TablePlanner {
       if (joinpred == null)
          return null;
    		 Plan outputPlan = makeProductJoin(current, sch);  
+   		 
    		 Plan mergePlan = makeMergeJoin(current, sch, joinpred);
    		 Plan indexPlan = makeIndexJoin(current, sch);
    		 Plan nestedPlan = makeNestedLoopJoin(current, sch, joinpred);
    		 Plan hashPlan = makeHashJoin(current, sch, joinpred);
-   		
+   		 
+   		 /**
+   		  Commented out for future fixes
+   		 
    		// if block accessed by each individual plan is cheaper than the current cheapest, override
    		if (outputPlan != null)
    			System.out.println("Product: " + outputPlan.blocksAccessed());
@@ -104,6 +108,8 @@ class TablePlanner {
    				outputPlan = hashPlan;
    			}
    		}
+   		
+   		*/
    		
    		return outputPlan;
    }

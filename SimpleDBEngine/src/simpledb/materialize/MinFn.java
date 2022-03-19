@@ -56,4 +56,20 @@ public class MinFn implements AggregationFn {
    public boolean isAlwaysInteger() {
 	   return false;
    }
+   
+   /**
+    * Returns the String representation of the MinFn.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return "Min of " + fldname;
+   }
+   
+   /**
+    * Returns the String representation of the MinFn over distinct elements.
+    * @return The corresponding String.
+    */
+   public String toStringDistinct() {
+	   return "Min of distinct " + fldname;
+   }
 }

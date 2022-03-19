@@ -57,4 +57,20 @@ public class CountFn implements AggregationFn {
    public Constant value() {
       return new Constant(count);
    }
+   
+   /**
+    * Returns the String representation of the CountFn.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return "Count of " + fldname;
+   }
+   
+   /**
+    * Returns the String representation of the CountFn over distinct elements.
+    * @return The corresponding String.
+    */
+   public String toStringDistinct() {
+	   return "Count of distinct " + fldname;
+   }
 }

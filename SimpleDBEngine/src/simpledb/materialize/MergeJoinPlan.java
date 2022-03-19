@@ -100,5 +100,13 @@ public class MergeJoinPlan implements Plan {
    public Schema schema() {
       return sch;
    }
+   
+   /**
+    * Returns the String representation of the MergeJoin plan.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return p1.toString() + " MergeJoin " + p2.toString() + " on: " + fldname1 + " & " + fldname2;
+    }
 }
 

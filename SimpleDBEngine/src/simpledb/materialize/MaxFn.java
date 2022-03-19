@@ -71,4 +71,20 @@ public class MaxFn implements AggregationFn {
    public boolean isAlwaysInteger() {
       return true;
    }
+   
+   /**
+    * Returns the String representation of the MaxFn.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return "Max of " + fldname;
+   }
+   
+   /**
+    * Returns the String representation of the MaxFn over distinct elements.
+    * @return The corresponding String.
+    */
+   public String toStringDistinct() {
+	   return "Max of distinct " + fldname;
+   }
 }

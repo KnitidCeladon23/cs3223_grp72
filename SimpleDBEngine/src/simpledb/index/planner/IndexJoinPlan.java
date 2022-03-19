@@ -88,4 +88,13 @@ public class IndexJoinPlan implements Plan {
    public Schema schema() {
       return sch;
    }
+   
+   /**
+    * Returns the String representation of the Index Join plan.
+    * @return The corresponding String.
+    */
+   
+   public String toString() {
+	   return p1.toString() + " Index Join " + p2.toString() + " on " + ii.getFieldName();
+   }
 }

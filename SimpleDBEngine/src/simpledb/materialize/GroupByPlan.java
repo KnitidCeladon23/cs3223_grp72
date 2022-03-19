@@ -102,4 +102,16 @@ public class GroupByPlan implements Plan {
    public Schema schema() {
       return sch;
    }
+   
+   /**
+    * Returns the String representation of the GroupBy plan.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   String S = p.toString() + " GroupBy " + groupfields.toString();
+	   if (!aggfns.isEmpty()) {
+		   return S + " Aggregated To: " + aggfns;
+	   }
+	   return S;
+   }
 }
