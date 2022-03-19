@@ -39,7 +39,7 @@ public class SortPlan implements Plan {
       Scan src = p.open();
       List<TempTable> runs = splitIntoRuns(src);
       src.close();
-      while (runs.size() > 2)
+      while (runs.size() > 1)
          runs = doAMergeIteration(runs);
       return new SortScan(runs, comp);
    }
@@ -53,9 +53,13 @@ public class SortPlan implements Plan {
     * @see simpledb.plan.Plan#blocksAccessed()
     */
    public int blocksAccessed() {
-      // does not include the one-time cost of sorting
-      Plan mp = new MaterializePlan(tx, p); // not opened; just for analysis
-      return mp.blocksAccessed();
+	   Plan mp = new MaterializePlan(tx, p); // not opened; just for analysis
+       int carryover = Math.max(p.blocksAccessed() - mp.blocksAccessed(), 0);
+       int sortedRuns = (int) Math.ceil(mp.recordsOutput() * 1.0 / 2);
+       int passes = (int) Math.ceil(Math.log(sortedRuns) / Math.log(2)) + 1;
+
+       //cost is computed as numPasses * 2 * M
+       return mp.blocksAccessed() * 2 * passes + carryover;
    }
    
    /**

@@ -37,7 +37,7 @@ public class RecordComparator implements Comparator<Scan> {
 		  Constant val1 = s1.getVal(entry.getKey());
 	      Constant val2 = s2.getVal(entry.getKey());
 	      int result = val1.compareTo(val2);
-	      if (result != 0 && entry.getValue()) {
+	      if (result != 0) {
 	    	 if (entry.getValue()) {
 	    		 return result;
 	    	 } else {

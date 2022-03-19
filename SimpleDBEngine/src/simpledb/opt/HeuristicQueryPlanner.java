@@ -53,7 +53,7 @@ public class HeuristicQueryPlanner implements QueryPlanner {
       
       // Step 5: Add a sort plan if ordered
       if (!data.orderByAttributeList().isEmpty()) {
-         currentplan = new SortPlan(tx, currentplan, data.orderByAttributeList());
+         p = new SortPlan(tx, currentplan, data.orderByAttributeList());
       }
       
       // if group by clause or aggregation function is present
