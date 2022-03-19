@@ -16,6 +16,14 @@ public class HashJoinPlan implements Plan {
 	
 	private int numOfPartitions;
 	
+	/**
+	 * Constructor for HashJoinPlan - initializes its variables to those passed to the constructor.	
+	 * @param tx
+	 * @param p1
+	 * @param p2
+	 * @param fldname1
+	 * @param fldname2
+	 */
 	public HashJoinPlan(Transaction tx, Plan p1, Plan p2, String fldname1, String fldname2) {
 		this.tx = tx;
 		this.p1 = p1;
@@ -27,6 +35,9 @@ public class HashJoinPlan implements Plan {
 		this.numOfPartitions = tx.availableBuffs() - 1;
 	}
 	
+	/**
+	 * Creates HashJoinScan from Scans of p1 and p2, along with other parameters.
+	 */
 	public Scan open() {
 		Scan s1 = p1.open();
 		Scan s2 = p2.open();
@@ -34,14 +45,24 @@ public class HashJoinPlan implements Plan {
 		return new HashJoinScan(s1, s2, fldname1, fldname2, s1Fields, numOfPartitions);
 	}
 	
+	/**
+	 * Returns the blocks accessed as a result of the join, which is the sum of those accessed by p1 and p2.	
+	 */
 	public int blocksAccessed() {
 		return 3 * (p1.blocksAccessed() + p2.blocksAccessed());
 	}
 	
+	/**
+	 * Returns the combined records output by the join, which is the product of those output by p1 and p2.
+	 */
 	public int recordsOutput() {
 		return p1.recordsOutput() * p2.recordsOutput();
 	}
 	
+	/**
+	 * Returns the distinct values corresponding to fldname in the schema of p1 if there are any, else those corresponding to fldname
+	 * in p2.
+	 */
 	public int distinctValues(String fldname) {
 		if (p1.schema().hasField(fldname)) {
 			return p1.distinctValues(fldname);
@@ -50,6 +71,9 @@ public class HashJoinPlan implements Plan {
 		}
 	}
 	
+	/**
+	 * Returns the schema of the join.
+	 */
 	public Schema schema() {
 		return sch;
 	}

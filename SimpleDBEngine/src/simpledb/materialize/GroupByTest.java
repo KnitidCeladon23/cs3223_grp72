@@ -7,6 +7,11 @@ import simpledb.server.SimpleDB;
 import simpledb.tx.Transaction;
 
 public class GroupByTest {
+	
+	/**
+	 * Generates a Group By plan and commits the transaction.
+	 * @param args
+	 */
    public static void main(String[] args) {
       try {
     	 // analogous to the driver
