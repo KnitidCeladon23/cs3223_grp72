@@ -18,7 +18,7 @@ public class CreateStudentDB {
 		planner1.executeUpdate(s1, tx);
 		System.out.println("Table STUDENT created.");
 		
-		s1 = "create index testindex on STUDENT (MajorId) using btree";
+		s1 = "create index studentid on STUDENT (sid) using btree";
 		planner1.executeUpdate(s1, tx);
 
 		s1 = "insert into STUDENT(SId, SName, MajorId, GradYear) values ";

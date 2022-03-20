@@ -74,36 +74,36 @@ class TablePlanner {
    		 Plan hashPlan = makeHashJoin(current, sch, joinpred);
    		
    		// if block accessed by each individual plan is cheaper than the current cheapest, override
-   		if (outputPlan != null)
-   			System.out.println("Product: " + outputPlan.blocksAccessed());
-   		
-   		if (mergePlan != null) {
-   			System.out.println("Sort Merge: " + mergePlan.blocksAccessed());
-   			if (mergePlan.blocksAccessed() < outputPlan.blocksAccessed()) {
-   				outputPlan = mergePlan;
-   			}
-   		}
-   		
-   		if (indexPlan != null) {
-   			System.out.println("Indexed: " + indexPlan.blocksAccessed());
-   			if (indexPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
-   				outputPlan = indexPlan;
-   			}
-   		}
-   		
-   		if (nestedPlan != null) {
-   			System.out.println("Nested Loops: " + nestedPlan.blocksAccessed());
-   			if (nestedPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
-   				outputPlan = nestedPlan;
-   			}
-   		}
-   		
-   		if (hashPlan != null) {
-   			System.out.println("Hashed: " + hashPlan.blocksAccessed());
-   			if (hashPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
-   				outputPlan = hashPlan;
-   			}
-   		}
+//   		if (outputPlan != null)
+//   			System.out.println("Product: " + outputPlan.blocksAccessed());
+//   		
+//   		if (mergePlan != null) {
+//   			System.out.println("Sort Merge: " + mergePlan.blocksAccessed());
+//   			if (mergePlan.blocksAccessed() < outputPlan.blocksAccessed()) {
+//   				outputPlan = mergePlan;
+//   			}
+//   		}
+//   		
+//   		if (indexPlan != null) {
+//   			System.out.println("Indexed: " + indexPlan.blocksAccessed());
+//   			if (indexPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
+//   				outputPlan = indexPlan;
+//   			}
+//   		}
+//   		
+//   		if (nestedPlan != null) {
+//   			System.out.println("Nested Loops: " + nestedPlan.blocksAccessed());
+//   			if (nestedPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
+//   				outputPlan = nestedPlan;
+//   			}
+//   		}
+//   		
+//   		if (hashPlan != null) {
+//   			System.out.println("Hashed: " + hashPlan.blocksAccessed());
+//   			if (hashPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
+//   				outputPlan = hashPlan;
+//   			}
+//   		}
    		
    		return outputPlan;
    }
