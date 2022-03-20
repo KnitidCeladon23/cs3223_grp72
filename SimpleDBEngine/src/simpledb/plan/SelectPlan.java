@@ -83,4 +83,12 @@ public class SelectPlan implements Plan {
    public Schema schema() {
       return p.schema();
    }
+   
+   /**
+    * Returns the String representation of the Select plan.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return "Select " + pred.toString() + "," + p.toString();
+   }
 }

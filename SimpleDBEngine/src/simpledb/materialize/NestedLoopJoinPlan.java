@@ -12,6 +12,14 @@ public class NestedLoopJoinPlan implements Plan {
 	private Schema sch = new Schema();
 	private Transaction tx;
 	
+	/**
+	 * Constructor for NestedLoopJoinPlan - initializes variables to those passed to it.
+	 * @param tx
+	 * @param p1
+	 * @param p2
+	 * @param fldname1
+	 * @param fldname2
+	 */
 	public NestedLoopJoinPlan(Transaction tx, Plan p1, Plan p2, String fldname1, String fldname2) {
 		if (p1.recordsOutput() < p2.recordsOutput()) {
 	        innerLoop = p2;
@@ -40,10 +48,16 @@ public class NestedLoopJoinPlan implements Plan {
 		return outerLoop.recordsOutput() + (outerLoop.blocksAccessed() * innerLoop.recordsOutput());
 	}
 	
+	/**
+	 * Counts the records output by the nested loop join, which is the sum of those output by the inner and outer looops.
+	 */
 	public int recordsOutput() {
     	return outerLoop.recordsOutput() * innerLoop.recordsOutput();
 	}
 
+	/**
+	 * Returns the distinct values corresponding to fldname in outerloop if they exist, else those in innerloop.
+	 */
     public int distinctValues(String fldname) {
     	if (outerLoop.schema().hasField(fldname)) {
     		return outerLoop.distinctValues(fldname);
@@ -52,6 +66,9 @@ public class NestedLoopJoinPlan implements Plan {
     	}
    }
 
+    /**
+     * Returns the schema of the nested loop join.
+     */
    public Schema schema() {
       return sch;
    }

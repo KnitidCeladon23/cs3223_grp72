@@ -20,6 +20,15 @@ public class HashJoinScan implements Scan {
 	private ArrayList<Map<String, Constant>> curr_arr;
 	private Map<Constant, ArrayList<Map<String, Constant>>> hashTable;
 	
+	/**
+	 * Constructor for HashJoinScan - initializes variables to those passed to it.
+	 * @param s1
+	 * @param s2
+	 * @param fldname1
+	 * @param fldname2
+	 * @param s1Fields
+	 * @param numOfPartitions
+	 */
 	public HashJoinScan(Scan s1, Scan s2, String fldname1, String fldname2, List<String> s1Fields, int numOfPartitions) {
 		this.s1 = s1;
 		this.s2 = s2;
@@ -41,6 +50,9 @@ public class HashJoinScan implements Scan {
 		
 	}
 	
+	/**
+	 * Returns true if there remain partitions with unmatched records.
+	 */
 	public boolean next() {
 		
 		while (true) {
@@ -93,6 +105,10 @@ public class HashJoinScan implements Scan {
 		
 	}
 	
+	/**
+	 * Returns the integer corresponding to the given field in s2 if one exists, else the String corresponding to the given field
+	 * in s1.
+	 */
 	public int getInt(String fldname) {
 		if (s2.hasField(fldname)) {
 			return s2.getInt(fldname);
@@ -101,6 +117,10 @@ public class HashJoinScan implements Scan {
 		}
 	}
 	
+	/**
+	 * Returns the String corresponding to the given field in s2 if one exists, else the String corresponding to the given field
+	 * in s1.
+	 */
 	public String getString(String fldname) {
 		if (s2.hasField(fldname)) {
 			return s2.getString(fldname);
@@ -109,6 +129,9 @@ public class HashJoinScan implements Scan {
 		}
 	}
 	
+	/**
+	 * Returns the value corresponding to the given key in s2 if it exists, else the value corresponding to the given key in s1.
+	 */
 	public Constant getVal(String fldname) {
 		if (s2.hasField(fldname)) {
 			return s2.getVal(fldname);
@@ -117,6 +140,9 @@ public class HashJoinScan implements Scan {
 		}
 	}
 	
+	/**
+	 * Checks if either s1 or s2 have the given field in their keyset.
+	 */
 	public boolean hasField(String fldname) {
 		return s2.hasField(fldname) || curr_s1Record.containsKey(fldname);
 	}

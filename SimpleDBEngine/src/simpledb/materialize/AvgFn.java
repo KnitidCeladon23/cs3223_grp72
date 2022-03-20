@@ -82,4 +82,20 @@ public class AvgFn implements AggregationFn {
    public boolean isAlwaysInteger() {
       return true;
    }
+   
+   /**
+    * Returns the String representation of the AvgFn.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return "Average over " + fldname;
+   }
+   
+   /**
+    * Returns the String representation of the AvgFn over distinct elements.
+    * @return The corresponding String.
+    */
+   public String toStringDistinct() {
+	   return "Average over distinct " + fldname;
+   }
 }

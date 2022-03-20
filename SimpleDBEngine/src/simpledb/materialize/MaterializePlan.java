@@ -84,4 +84,12 @@ public class MaterializePlan implements Plan {
    public Schema schema() {
       return srcplan.schema();
    }
+   
+   /**
+    * Returns the String representation of the MaterializePlan.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return "Materialize: " + srcplan.toString();
+   }
 }

@@ -112,4 +112,12 @@ public class MultibufferProductPlan implements Plan {
       dest.close();
       return t;
    }
+   
+   /**
+    * Returns the String representation of the MultibufferProduct Plan.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return lhs.toString() + " Product " + new MaterializePlan(tx, rhs).toString();
+   }
 }

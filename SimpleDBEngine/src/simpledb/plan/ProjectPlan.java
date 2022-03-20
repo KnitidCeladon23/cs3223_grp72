@@ -69,4 +69,12 @@ public class ProjectPlan implements Plan {
    public Schema schema() {
       return schema;
    }
+   
+   /**
+    * Returns the String representation of the Project plan.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return "Project :" + schema.fields() + "," + p.toString();
+   }
 }

@@ -86,6 +86,12 @@ public class SortPlan implements Plan {
       return sch;
    }
    
+   /**
+    * Splits the given Scan into an ArrayList of runs.
+    * @param src
+    * @return
+    */
+   
    private List<TempTable> splitIntoRuns(Scan src) {
       List<TempTable> temps = new ArrayList<>();
       src.beforeFirst();
@@ -106,6 +112,11 @@ public class SortPlan implements Plan {
       return temps;
    }
    
+   /**
+    * Carries out a merge of the first pair of runs in the given list of tables
+    * @param runs
+    * @return
+    */
    private List<TempTable> doAMergeIteration(List<TempTable> runs) {
       List<TempTable> result = new ArrayList<>();
       while (runs.size() > 1) {
@@ -118,6 +129,12 @@ public class SortPlan implements Plan {
       return result;
    }
    
+   /**
+    * Iteratively merges a pair of runs passed to it.
+    * @param p1
+    * @param p2
+    * @return
+    */
    private TempTable mergeTwoRuns(TempTable p1, TempTable p2) {
       Scan src1 = p1.open();
       Scan src2 = p2.open();

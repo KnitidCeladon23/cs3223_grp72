@@ -76,4 +76,12 @@ public class ProductPlan implements Plan {
    public Schema schema() {
       return schema;
    }
+   
+   /**
+    * Returns the String representation of the Product plan.
+    * @return The corresponding String.
+    */
+   public String toString() {
+	   return p1.toString() + " Product " + p2.toString();
+   }
 }
