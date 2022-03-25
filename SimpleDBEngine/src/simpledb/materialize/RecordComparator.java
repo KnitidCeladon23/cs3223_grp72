@@ -19,6 +19,13 @@ public class RecordComparator implements Comparator<Scan> {
    public RecordComparator(LinkedHashMap<String, Boolean> fields) {
       this.fields = fields;
    }
+
+   public RecordComparator(List<String> fields) {
+      this.fields = new LinkedHashMap<>();
+      for (String field : fields) {
+         this.fields.put(field, true);
+      }
+   }
    
    /**
     * Compare the current records of the two specified scans.

@@ -59,6 +59,10 @@ public class TableScan implements UpdateScan {
          return new Constant(getString(fldname));
    }
 
+   public int getCurrentSlot() {
+      return this.currentslot;
+   }
+
    public boolean hasField(String fldname) {
       return layout.schema().hasField(fldname);
    }
