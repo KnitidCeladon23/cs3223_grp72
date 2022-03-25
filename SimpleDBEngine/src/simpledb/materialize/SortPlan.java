@@ -22,6 +22,16 @@ public class SortPlan implements Plan {
     * @param sortfields the fields to sort by
     * @param tx the calling transaction
     */
+   public SortPlan(Transaction tx, Plan p, LinkedHashMap<String, Boolean> sortfields, List<String> fieldlist) {
+      this.tx = tx;
+      this.p = p;
+      this.sch = new Schema();
+      for (String fldname : fieldlist) {
+          sch.add(fldname, p.schema());
+      }
+      comp = new RecordComparator(sortfields);
+   }
+   
    public SortPlan(Transaction tx, Plan p, LinkedHashMap<String, Boolean> sortfields) {
       this.tx = tx;
       this.p = p;

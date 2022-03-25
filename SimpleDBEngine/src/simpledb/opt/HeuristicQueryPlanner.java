@@ -2,6 +2,7 @@ package simpledb.opt;
 
 import java.util.*;
 import simpledb.tx.Transaction;
+import simpledb.materialize.DistinctPlan;
 import simpledb.materialize.GroupByPlan;
 import simpledb.materialize.SortPlan;
 import simpledb.metadata.MetadataMgr;
@@ -53,12 +54,17 @@ public class HeuristicQueryPlanner implements QueryPlanner {
       
       // Step 5: Add a sort plan if ordered
       if (!data.orderByAttributeList().isEmpty()) {
-         p = new SortPlan(tx, currentplan, data.orderByAttributeList());
+         p = new SortPlan(tx, currentplan, data.orderByAttributeList(), data.fields());
       }
       
       // if group by clause or aggregation function is present
       if (!data.groupfields().isEmpty() || !data.aggregations().isEmpty()) {
          p = new GroupByPlan(tx, p, data.groupfields(), data.aggregations());
+      }
+
+      if (data.isDistinct()) {
+         p = new DistinctPlan(tx, p, data.fields());
+         System.out.println("plan updated to distinct plan");
       }
       
       return p;
