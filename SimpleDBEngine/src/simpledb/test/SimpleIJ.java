@@ -9,10 +9,11 @@ public class SimpleIJ {
    public static void main(String[] args) {
       Scanner sc = new Scanner(System.in);
       System.out.println("Connect> ");
-      String s = sc.nextLine();
-      Driver d = (s.contains("//")) ? new NetworkDriver() : new EmbeddedDriver();
+      //String s = sc.nextLine();
+      //Driver d = (s.contains("//")) ? new NetworkDriver() : new EmbeddedDriver();
+      Driver d = (new EmbeddedDriver());
 
-      try (Connection conn = d.connect(s, null);
+      try (Connection conn = d.connect("jdbc:simpledb:studentdb", null);
            Statement stmt = conn.createStatement()) {
          System.out.print("\nSQL> ");
          while (sc.hasNextLine()) {

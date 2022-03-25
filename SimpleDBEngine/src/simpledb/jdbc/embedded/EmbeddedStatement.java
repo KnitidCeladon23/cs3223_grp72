@@ -28,6 +28,7 @@ class EmbeddedStatement extends StatementAdapter {
       try {
          Transaction tx = conn.getTransaction();
          Plan pln = planner.createQueryPlan(qry, tx);
+         EmbeddedResultSet output = new EmbeddedResultSet(pln, conn);
          return new EmbeddedResultSet(pln, conn);
       }
       catch(RuntimeException e) {
