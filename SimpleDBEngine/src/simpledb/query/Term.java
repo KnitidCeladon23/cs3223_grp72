@@ -167,6 +167,6 @@ public class Term {
    }
    
    public String toString() {
-      return lhs.toString() + "=" + rhs.toString();
+      return lhs.toString() + getOperator() + rhs.toString();
    }
 }
