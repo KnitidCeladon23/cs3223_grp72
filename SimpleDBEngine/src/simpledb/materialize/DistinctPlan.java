@@ -46,43 +46,29 @@ public class DistinctPlan implements Plan {
      */
     public Scan open() {
         Scan s = p.open();
-        Scan s_out = p.open();
         List<TempTable> runs = splitIntoRuns(s);
         s.close();
 
+        if (runs.size() == 1) {
+            runs.add(removeDupes(runs.get(0)));
+        }
         while (runs.size() > 1) {
-            runs = distinctMergeIter(runs);
+            runs = mergeIter(runs);
         }
-        if (runs.size() >= 1) {
-            s_out = runs.get(0).open();
-        }
-
-        return s_out;
+        return runs.get(0).open();
     }
 
-    private List<TempTable> distinctMergeIter(List<TempTable> runs) {
+    private List<TempTable> mergeIter(List<TempTable> runs) {
         List<TempTable> result = new ArrayList<>();
-        TempTable p1 = runs.remove(0);
-        TempTable p2 = runs.remove(0);
-        while (runs.size() > 1) {
-            result.add(mergeDistinctRuns(p1, p2));
+        while (runs.size() >= 2) {
+            TempTable p1 = runs.remove(0);
+            TempTable p2 = runs.remove(0);
+            result.add(mergeTwoRuns(p1, p2));
         }
         if (runs.size() == 1) {
-            result.add(runs.get(0));
+            result.add(runs.remove(0));
         }
         return result;
-    }
-
-    /**
-     * @param s1 first scan
-     * @param s2 second scan
-     * @return boolean result of whether the scan is different
-     */
-    private boolean isDifferent(Scan s1, Scan s2) {
-        if (s1 == null || s2 == null) {
-            return false;
-        }
-        return comp.compare(s1, s2) != 0;
     }
 
     /**
@@ -90,62 +76,148 @@ public class DistinctPlan implements Plan {
      * @param p2 second run
      * @return merged run
      */
-    private TempTable mergeDistinctRuns(TempTable p1, TempTable p2) {
+    private TempTable mergeTwoRuns(TempTable p1, TempTable p2) {
         Scan s1 = p1.open();
         Scan s2 = p2.open();
-        boolean hasMore1 = s1.next();
-        boolean hasMore2 = s2.next();
         TempTable result = new TempTable(tx, sch);
-        UpdateScan us = result.open();
+        UpdateScan dest = result.open();
+        boolean hasNext1 = s1.next();
+        boolean hasNext2 = s2.next();
+        boolean hasDupes1;
+        boolean hasDupes2;
 
-        if (hasMore1 && hasMore2) {
-            if (comp.compare(s1, s2) < 0) {
-                hasMore1 = copy(s1, us);
-            } else {
-                hasMore2 = copy(s2, us);
+        // Use hash table to check for dupes
+        for (String fldname : this.distinct) {
+            duplicateTracker.put(fldname, new HashMap<Constant, Boolean>());
+        }
+        Map<Constant, Boolean> dupesHashMap = null;
+        // iterating through runs until there are no more records
+        while (hasNext1 && hasNext2) {
+            // checking for dupes in both runs
+            hasDupes1 = false;
+            hasDupes2 = false;
+            for (String fldname : distinct) {
+                Constant val1 = s1.getVal(fldname);
+                Constant val2 = s2.getVal(fldname);
+                dupesHashMap = duplicateTracker.get(fldname);
+                hasDupes1 = dupesHashMap.containsKey(val1);
+                hasDupes2 = dupesHashMap.containsKey(val2);
+            }
+
+            // Case 1: neither runs has dupes
+            if (!hasDupes1 && !hasDupes2) {
+                boolean valueIsDistinct = comp.compareDistinct(s1, s2);
+                if (comp.compare(s1, s2) < 0) {
+                    stash(s1);
+                    hasNext1 = copy(s1, dest);
+                    if (!valueIsDistinct) {
+                        hasNext2 = s2.next();
+                    }
+                } else {
+                    stash(s2);
+                    hasNext2 = copy(s2, dest);
+                    if (!valueIsDistinct) {
+                        hasNext1 = s1.next();
+                    }
+                }
+            } else if (!hasDupes1) { // Case 2: run 2 has dupes
+                stash(s1);
+                hasNext1 = copy(s1, dest);
+                hasNext2 = s2.next();
+            } else if (!hasDupes2) { // Case 3: run 1 has dupes
+                stash(s2);
+                hasNext2 = copy(s2, dest);
+                hasNext1 = s1.next();
+            } else { // Case 4: both runs have dupes
+                hasNext1 = s1.next();
+                hasNext2 = s2.next();
             }
         }
 
-        // iter through compare until one run is completed
-        while (hasMore1 && hasMore2) {
-            System.out.println("loop1");
-            if (comp.compare(s1, s2) < 0) {
-                if (isDifferent(s1, us)) {
-                    hasMore1 = copy(s1, us);
-                } else {
-                    hasMore1 = s1.next();
+        // iterating through run 1 only because run 2 is out of records
+        while (hasNext1) {
+            boolean hasDupes = false;
+            for (String fldname : distinct) {
+                Constant val = s1.getVal(fldname);
+                dupesHashMap = duplicateTracker.get(fldname);
+                if (dupesHashMap.containsKey(val)) {
+                    hasDupes = true;
+                    hasNext1 = s1.next();
+                    break;
                 }
-            } else if (isDifferent(s2, us)) {
-                hasMore2 = copy(s2, us);
-            } else {
-                hasMore2 = s2.next();
+            }
+            if (!hasDupes) {
+                stash(s1);
+                hasNext1 = copy(s1, dest);
             }
         }
 
-        if (hasMore1) {
-            while (hasMore1) {
-                System.out.println("loop2");
-                if (isDifferent(s1, us)) {
-                    hasMore1 = copy(s1, us);
-                } else {
-                    hasMore1 = s1.next();
+        // iterating through run 2 only because run 1 is out of records
+        while (hasNext2) {
+            boolean hasDupes = false;
+            for (String fldname : distinct) {
+                Constant val = s2.getVal(fldname);
+                dupesHashMap = duplicateTracker.get(fldname);
+                if (dupesHashMap.containsKey(val)) {
+                    hasDupes = true;
+                    hasNext2 = s2.next();
+                    break;
                 }
             }
-        } else {
-            while (hasMore2) {
-                System.out.println("loop3");
-                if (isDifferent(s2, us)) {
-                    hasMore2 = copy(s2, us);
-                } else {
-                    hasMore2 = s2.next();
-                }
+            if (!hasDupes) {
+                stash(s2);
+                hasNext2 = copy(s2, dest);
             }
         }
 
         s1.close();
         s2.close();
-        us.close();
+        dest.close();
         return result;
+    }
+
+    private TempTable removeDupes(TempTable p) {
+        // Initialize the hash table, in order to keep track duplicates.
+        for (String fldname : this.distinct) {
+            duplicateTracker.put(fldname, new HashMap<Constant, Boolean>());
+        }
+        Scan s = p.open();
+        TempTable result = new TempTable(tx, sch);
+        UpdateScan dest = result.open();
+        boolean hasNext = s.next(), hasDupes = false;
+        Map<Constant, Boolean> dupesHashMap = null;
+
+        while (hasNext) {
+            // Check if any is duplicated
+            for (String fldname : this.distinct) {
+                // Get the hash map
+                dupesHashMap = duplicateTracker.get(fldname);
+                Constant val = s.getVal(fldname);
+                if (dupesHashMap.containsKey(val)) {
+                    hasDupes = true;
+                    break;
+                }
+            }
+            if (!hasDupes) {
+                stash(s);
+                hasNext = copy(s, dest);
+            } else {
+                hasNext = s.next();
+            }
+        }
+        s.close();
+        dest.close();
+        return result;
+    }
+
+    private void stash(Scan s) {
+        Map<Constant, Boolean> dupesHashMap = null;
+        for (String fldname : distinct) {
+            // Get the hash map
+            dupesHashMap = duplicateTracker.get(fldname);
+            Constant val = s.getVal(fldname);
+            dupesHashMap.put(val, true);
+        }
     }
 
     /**
@@ -192,23 +264,26 @@ public class DistinctPlan implements Plan {
     }
 
     private List<TempTable> splitIntoRuns(Scan s) {
-        List<TempTable> temps = new ArrayList<>();
+        List<TempTable> tt = new ArrayList<>();
+        TempTable curr = new TempTable(tx, sch);
+
         s.beforeFirst();
-        if (!s.next())
-            return temps;
-        TempTable currenttemp = new TempTable(tx, sch);
-        temps.add(currenttemp);
-        UpdateScan currentscan = currenttemp.open();
-        while (copy(s, currentscan))
-            System.out.println("loop4");
+        if (!s.next()) {
+            return tt;
+        }
+
+        tt.add(curr);
+        UpdateScan currentscan = curr.open();
+        while (copy(s, currentscan)) {
             if (comp.compare(s, currentscan) < 0) {
                 currentscan.close();
-                currenttemp = new TempTable(tx, sch);
-                temps.add(currenttemp);
-                currentscan = (UpdateScan) currenttemp.open();
+                curr = new TempTable(tx, sch);
+                tt.add(curr);
+                currentscan = (UpdateScan) curr.open();
             }
+        }
         currentscan.close();
-        return temps;
+        return tt;
     }
 
     private boolean copy(Scan s, UpdateScan us) {

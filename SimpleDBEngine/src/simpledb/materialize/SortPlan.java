@@ -38,6 +38,13 @@ public class SortPlan implements Plan {
       sch = p.schema();
       comp = new RecordComparator(sortfields);
    }
+
+   public SortPlan(Transaction tx, Plan p, List<String> sortfields) {
+      this.tx = tx;
+		this.p = p;
+		sch = p.schema();
+		comp = new RecordComparator(sortfields);
+   }
    
    /**
     * This method is where most of the action is.
