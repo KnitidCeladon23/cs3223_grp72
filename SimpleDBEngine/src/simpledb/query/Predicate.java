@@ -136,6 +136,15 @@ public class Predicate {
       }
       return null;
    }
+
+   public Term equatesWithFieldGetOpr(String fldname) {
+      for (Term t : terms) {
+         String s = t.equatesWithField(fldname);
+         if (s != null)
+            return t;
+      }
+      return null;
+   }
    
    public String fieldComparator(String fldname) {
 		for (Term t : terms) {

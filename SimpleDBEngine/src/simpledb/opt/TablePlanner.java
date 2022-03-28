@@ -179,18 +179,10 @@ class TablePlanner {
    
    private Plan makeNestedLoopJoin(Plan curr_p, Schema sch, Predicate pred) {
 
-		Plan p = null;
-		String[] fields = pred.toString().split("=");
-		
-		if (curr_p.schema().hasField(fields[0]) && myplan.schema().hasField(fields[1])) {			
-			p = new NestedLoopJoinPlan(tx, curr_p, myplan, fields[0], fields[1]);
-		} else if(curr_p.schema().hasField(fields[1]) && myplan.schema().hasField(fields[0])) {
-			p = new NestedLoopJoinPlan(tx, curr_p, myplan, fields[1], fields[0]);
-		} else {
-			return null;
-		}
+		Plan p = new NestedLoopJoinPlan(tx, curr_p, myplan, pred);
 		p = addSelectPred(p);
 		return addJoinPred(p, sch);
+
 	}
    
    private Plan makeHashJoin(Plan curr_p, Schema sch, Predicate pred) {

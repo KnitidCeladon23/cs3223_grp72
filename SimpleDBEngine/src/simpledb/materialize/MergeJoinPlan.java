@@ -35,7 +35,7 @@ public class MergeJoinPlan implements Plan {
       this.fldname2 = fldname2;
       LinkedHashMap<String, Boolean> sortfields2 = new LinkedHashMap<>();
       sortfields2.put(fldname2, true);
-      this.p1 = new SortPlan(tx, p1, sortfields2);
+      this.p2 = new SortPlan(tx, p2, sortfields2);
       
       sch.addAll(p1.schema());
       sch.addAll(p2.schema());

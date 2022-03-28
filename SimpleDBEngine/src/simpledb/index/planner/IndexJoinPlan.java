@@ -54,9 +54,8 @@ public class IndexJoinPlan implements Plan {
     * @see simpledb.plan.Plan#blocksAccessed()
     */
    public int blocksAccessed() {
-      return p1.blocksAccessed() 
-         + (p1.recordsOutput() * ii.blocksAccessed())
-         + recordsOutput();
+      return p1.blocksAccessed()
+         + (p1.recordsOutput() * ii.blocksAccessed()) + recordsOutput();
    }
    
    /**
