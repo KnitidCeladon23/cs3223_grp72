@@ -10,6 +10,7 @@ import simpledb.query.*;
  */
 public class RecordComparator implements Comparator<Scan> {
    private LinkedHashMap<String, Boolean> fields;
+   private List<String> fields_lst;
    
    /**
     * Create a comparator using the specified fields,
@@ -22,6 +23,7 @@ public class RecordComparator implements Comparator<Scan> {
 
    public RecordComparator(List<String> fields) {
       this.fields = new LinkedHashMap<>();
+      this.fields_lst = fields;
       for (String field : fields) {
          this.fields.put(field, true);
       }
@@ -40,32 +42,41 @@ public class RecordComparator implements Comparator<Scan> {
     * @return the result of comparing each scan's current record according to the field list
     */
    public int compare(Scan s1, Scan s2) {
-	  for (Map.Entry<String, Boolean> entry : fields.entrySet()) {
-		  Constant val1 = s1.getVal(entry.getKey());
+
+      if (this.fields_lst != null) {
+			for (String fldname : this.fields_lst) {
+				Constant val1 = s1.getVal(fldname);
+				Constant val2 = s2.getVal(fldname);
+				int result = val1.compareTo(val2);
+				if (result != 0)
+					return result;
+			}
+			return 0;
+		}
+
+	   for (Map.Entry<String, Boolean> entry : fields.entrySet()) {
+		   Constant val1 = s1.getVal(entry.getKey());
 	      Constant val2 = s2.getVal(entry.getKey());
 	      int result = val1.compareTo(val2);
 	      if (result != 0) {
-	    	 if (entry.getValue()) {
-	    		 return result;
-	    	 } else {
-	    		 return -result;
-	    	 }
+	    	if (entry.getValue()) {
+	    		return result;
+	    	} else {
+	    		return -result;
+	    	}
 	      }
 	  }
       return 0;
    }
 
    public boolean compareDistinct(Scan s1, Scan s2) {
-	  for (Map.Entry<String, Boolean> entry : fields.entrySet()) {
-		 int output = s1.getVal(entry.getKey()).compareTo(s2.getVal(entry.getKey()));
-		 if (output == 0) {
-			if (entry.getValue()) {
+      for (String fldname : this.fields_lst) {
+			Constant val1 = s1.getVal(fldname);
+			Constant val2 = s2.getVal(fldname);
+			int result = val1.compareTo(val2);
+			if (result == 0)
 				return false;
-			} else {
-				return true;
-			}
-		 }
-      }
-      return true;
+		}
+		return true;
    }
 }
