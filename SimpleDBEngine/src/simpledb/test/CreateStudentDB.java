@@ -202,8 +202,8 @@ public class CreateStudentDB {
 		planner.executeUpdate(s, tx);
 		System.out.println("Table ENROLL created.");
 
-		// s = "create index testindex on ENROLL(studentID) using hash";
-		// planner.executeUpdate(s, tx);
+		s = "create index testindex on ENROLL(studentID) using hash";
+		planner.executeUpdate(s, tx);
 
 		s = "insert into ENROLL(EId, StudentId, SectionId, Grade) values ";
 		String[] enrollvals = {"(14, 1, 453, 'A+')",

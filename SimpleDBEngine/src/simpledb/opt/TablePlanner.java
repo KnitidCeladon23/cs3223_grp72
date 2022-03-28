@@ -69,51 +69,46 @@ class TablePlanner {
       Predicate joinpred = mypred.joinSubPred(myschema, sch);
       if (joinpred == null)
          return null;
-   		 Plan outputPlan = makeProductJoin(current, sch);  
+   		 Plan outputPlan = makeProductJoin(current, sch); //working
+   		 Plan mergePlan = makeMergeJoin(current, sch, joinpred); //not working
+   		 Plan indexPlan = makeIndexJoin(current, sch); //not working
+   		 Plan nestedPlan = makeNestedLoopJoin(current, sch, joinpred); //working
+   		 Plan hashPlan = makeHashJoin(current, sch, joinpred); //not working
    		 
-   		 Plan mergePlan = makeMergeJoin(current, sch, joinpred);
-   		 Plan indexPlan = makeIndexJoin(current, sch);
-   		 Plan nestedPlan = makeNestedLoopJoin(current, sch, joinpred);
-   		 Plan hashPlan = makeHashJoin(current, sch, joinpred);
-   		 
-   		 /**
-   		  Commented out for future fixes
-   		 
+
    		// if block accessed by each individual plan is cheaper than the current cheapest, override
-//   		if (outputPlan != null)
-//   			System.out.println("Product: " + outputPlan.blocksAccessed());
-//   		
-//   		if (mergePlan != null) {
-//   			System.out.println("Sort Merge: " + mergePlan.blocksAccessed());
-//   			if (mergePlan.blocksAccessed() < outputPlan.blocksAccessed()) {
-//   				outputPlan = mergePlan;
-//   			}
-//   		}
-//   		
-//   		if (indexPlan != null) {
-//   			System.out.println("Indexed: " + indexPlan.blocksAccessed());
-//   			if (indexPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
-//   				outputPlan = indexPlan;
-//   			}
-//   		}
-//   		
-//   		if (nestedPlan != null) {
-//   			System.out.println("Nested Loops: " + nestedPlan.blocksAccessed());
-//   			if (nestedPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
-//   				outputPlan = nestedPlan;
-//   			}
-//   		}
-//   		
-//   		if (hashPlan != null) {
-//   			System.out.println("Hashed: " + hashPlan.blocksAccessed());
-//   			if (hashPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
-//   				outputPlan = hashPlan;
-//   			}
-//   		}
+  		if (outputPlan != null)
+  			System.out.println("Product: " + outputPlan.blocksAccessed());
+  		
+  		if (mergePlan != null) {
+  			System.out.println("Sort Merge: " + mergePlan.blocksAccessed());
+  			if (mergePlan.blocksAccessed() < outputPlan.blocksAccessed()) {
+  				outputPlan = mergePlan;
+  			}
+  		}
+  		
+  		if (indexPlan != null) {
+  			System.out.println("Indexed: " + indexPlan.blocksAccessed());
+  			if (indexPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
+  				outputPlan = indexPlan;
+  			}
+  		}
+  		
+  		if (nestedPlan != null) {
+  			System.out.println("Nested Loops: " + nestedPlan.blocksAccessed());
+  			if (nestedPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
+  				outputPlan = nestedPlan;
+  			}
+  		}
+  		
+  		if (hashPlan != null) {
+  			System.out.println("Hashed: " + hashPlan.blocksAccessed());
+  			if (hashPlan.blocksAccessed() < outputPlan.blocksAccessed()) {
+  				outputPlan = hashPlan;
+  			}
+  		}
    		
-   		*/
-   		
-   		return outputPlan;
+   		return mergePlan;
    }
    
    /**
