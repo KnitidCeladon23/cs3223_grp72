@@ -20,6 +20,7 @@ class TablePlanner {
    private TablePlan myplan;
    private Predicate mypred;
    private Schema myschema;
+   private String tblname;
    private Map<String,IndexInfo> indexes;
    private Transaction tx;
    
@@ -36,6 +37,7 @@ class TablePlanner {
    public TablePlanner(String tblname, Predicate mypred, Transaction tx, MetadataMgr mdm) {
       this.mypred  = mypred;
       this.tx  = tx;
+      this.tblname = tblname;
       myplan   = new TablePlan(tx, tblname, mdm);
       myschema = myplan.schema();
       indexes  = mdm.getIndexInfo(tblname, tx);
@@ -130,13 +132,13 @@ class TablePlanner {
          Constant val = mypred.equatesWithConstant(fldname);
          if (val != null) {
             IndexInfo ii = indexes.get(fldname);
-            if(ii.getStructName().equals("hash")) {
-               String comparatorType = mypred.fieldComparator(fldname);
-               if(comparatorType != null && !comparatorType.equals("=")) 
+            if (ii.getStructName().equals("hash") || ii.getStructName().equals("btree")) {
+               String comparatorType = mypred.fieldComparatorConstant(fldname);
+               if (comparatorType != null && !comparatorType.equals("=")) 
                   return null;
             }
             System.out.println("index on " + fldname + " used");
-            return new IndexSelectPlan(myplan, ii, val);
+            return new IndexSelectPlan(myplan, ii, val, tblname);
          }
       }
       return null;

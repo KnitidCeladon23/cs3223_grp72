@@ -73,7 +73,7 @@ public class Parser {
       if (lex.matchKeyword("distinct")) {
 			lex.eatKeyword("distinct");
 			distinct = true;
-	  }
+	   }
       List<String> fields = new ArrayList<>();
       List<AggregationFn> aggregations = new ArrayList<>();
       

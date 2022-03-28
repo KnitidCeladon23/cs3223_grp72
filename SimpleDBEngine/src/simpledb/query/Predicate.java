@@ -146,6 +146,15 @@ public class Predicate {
 		return null;
 	}
 
+   public String fieldComparatorConstant(String fldname) {
+		for (Term t : terms) {
+			Constant c = t.equatesWithConstant(fldname);
+			if (c != null)
+				return t.getOperator();
+		}
+		return null;
+	}
+
    public String toString() {
       Iterator<Term> iter = terms.iterator();
       if (!iter.hasNext()) 

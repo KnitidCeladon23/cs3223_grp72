@@ -49,9 +49,11 @@ public class IndexInfo {
    public Index open() {
 	   if (this.structname.equals("btree")) {
 		   return new BTreeIndex(tx, idxname, idxLayout);
-	   } else {
+	   } else if (this.structname.equals("hash")){
 		   return new HashIndex(tx, idxname, idxLayout);
-	   }
+	   } else {
+         return null;
+      }
    }
    
    /**
@@ -70,10 +72,11 @@ public class IndexInfo {
       int numblocks = si.recordsOutput() / rpb;
       if (this.structname.equals("btree")) {
     	  return BTreeIndex.searchCost(numblocks, rpb);
-	   } else {
-		   return HashIndex.searchCost(numblocks, rpb);
-	   }
-    
+	   } else if (this.structname.equals("hash")) {
+         return HashIndex.searchCost(numblocks, rpb);
+      } else {
+         return -1;
+      }
    }
    
    /**
