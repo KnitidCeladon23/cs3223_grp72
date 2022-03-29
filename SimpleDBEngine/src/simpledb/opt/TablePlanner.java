@@ -69,11 +69,12 @@ class TablePlanner {
       Predicate joinpred = mypred.joinSubPred(myschema, sch);
       if (joinpred == null)
          return null;
-   		 Plan outputPlan = makeProductJoin(current, sch); //working
-   		 Plan mergePlan = makeMergeJoin(current, sch, joinpred); //not working
-   		 Plan indexPlan = makeIndexJoin(current, sch); //not working
-   		 Plan nestedPlan = makeNestedLoopJoin(current, sch, joinpred); //working
-   		 Plan hashPlan = makeHashJoin(current, sch, joinpred); //not working
+   		 Plan outputPlan = makeProductJoin(current, sch); 
+   		 
+   		 Plan mergePlan = makeMergeJoin(current, sch, joinpred); 
+   		 Plan indexPlan = makeIndexJoin(current, sch); 
+   		 Plan nestedPlan = makeNestedLoopJoin(current, sch, joinpred); 
+   		 Plan hashPlan = makeHashJoin(current, sch, joinpred); 
    		 
 
    		// if block accessed by each individual plan is cheaper than the current cheapest, override
@@ -108,7 +109,7 @@ class TablePlanner {
   			}
   		}
    		
-   		return mergePlan;
+   		return outputPlan;
    }
    
    /**
